@@ -34,7 +34,7 @@ Step 1: Clone the repository or download the source files.
 If you don't already have the repository, you can clone it using Git:
 
 git clone <repository_url>
-
+https://github.com/noahmeduvsky/Password-Hashing-and-Cracking.git
 
 Step 2: Install the dependencies.
 You can install the required libraries by running:
