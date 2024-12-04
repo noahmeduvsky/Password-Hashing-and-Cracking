@@ -234,11 +234,12 @@ root = tk.Tk()
 root.title("Password Generation and Hacking")
 
 # --------------- Set the image path based on the environment ---------------
-if getattr(sys, 'frozen', False):  # If running as a bundled executable
+'''if getattr(sys, 'frozen', False):  # If running as a bundled executable
     image_path = os.path.join(sys._MEIPASS, "image.png")
 else:  # If running as a Python script
-    image_path = "image.png"  # Same folder as app.py
+    image_path = "image.png"  # Same folder as app.py'''
 
+image_path = "image.png"  # Same folder as app.py
 # Load the background image
 background_image = tk.PhotoImage(file=image_path)
 background_label = tk.Label(root, image=background_image)
@@ -326,3 +327,5 @@ end_game_button.pack(pady=20)
 
 root.geometry("600x400")  # Set window size
 root.mainloop()
+
+
