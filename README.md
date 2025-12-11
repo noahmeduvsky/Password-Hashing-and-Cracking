@@ -1,115 +1,89 @@
-# Password-Hashing-and-Cracking
+# Password Hash Cracking Benchmark
 
-Parallelizing Password-Hash Search for Security Testing: A Comparative Study of CPU, Multi-thread, and GPU Approaches
-
-## Project Status
-
-**Week 1, Week 2, and Week 3 Complete!**
-
-All required objectives from the proposal have been implemented:
-- Python benchmarking harness with timing infrastructure
-- Single-threaded C/C++ backend
-- Multi-threaded C/C++ backend with thread pool
-- Scaling benchmarks with varying thread counts
-- Workload generation (brute-force and dictionary attacks)
+Benchmarking tool to compare different approaches for password hash cracking - Python serial, C serial, and C multi-threaded implementations.
 
 ## Quick Start
 
-### 1. Build C Backends
+You can run the Python backend immediately without any setup:
+
+```bash
+python run_benchmark.py --test
+```
+
+This runs a simple test with the Python backend. No compilation needed.
+
+## Building C Backends (Optional)
+
+The C backends are faster but need to be compiled first.
 
 **Linux/macOS:**
 ```bash
-# Install OpenSSL development libraries first:
-# Ubuntu/Debian: sudo apt-get install libssl-dev
-# Fedora/RHEL: sudo yum install openssl-devel
+# Install OpenSSL dev libraries
+sudo apt-get install libssl-dev  # Ubuntu/Debian
+# or
+sudo yum install openssl-devel  # Fedora/RHEL
 
-# Build both serial and multi-threaded backends
+# Build
 make all
 ```
 
 **Windows:**
 ```powershell
-# First, install MinGW-w64 (see BUILD_WINDOWS.md)
-# Then run the build script:
 .\build_windows.ps1
 ```
 
-### 2. Run Benchmarks
+You'll need MinGW-w64 and OpenSSL installed. The Python backend works fine without this.
 
-**Simple Test (Python only - no compilation needed):**
+## Running Benchmarks
+
+**Basic test:**
 ```bash
 python run_benchmark.py --test
 ```
 
-**Scaling Benchmark (requires compilation):**
+**Brute-force attack:**
+```bash
+python run_benchmark.py --brute-force --num-targets 5 --max-length 6
+```
+
+**Dictionary attack:**
+```bash
+python run_benchmark.py --dictionary --num-targets 3 --wordlist-size 1000
+```
+
+**Scaling test (compare thread counts):**
 ```bash
 python scaling_benchmark.py --brute-force --threads 1,2,4,8
 ```
 
-## Project Structure
+## What It Does
 
-### Core Framework
-- `benchmark_harness.py` - Main benchmarking framework
-- `run_benchmark.py` - Standard benchmark runner
-- `scaling_benchmark.py` - Scaling benchmark with varying thread counts
-- `workload_generator.py` - Workload generation utilities
+- Tests password hash cracking with different backends
+- Compares Python vs C implementations
+- Tests multi-threading performance with different thread counts
+- Supports brute-force and dictionary attacks
+- Outputs results to CSV files in `benchmark_results/`
 
-### C Implementations
-- `hash_cracker_serial.c/h` - Single-threaded C implementation
-- `hash_cracker_multithreaded.c/h` - Multi-threaded C implementation
-- `Makefile` - Build system
+## Requirements
 
-### Python Wrappers
-- `c_backend_wrapper.py` - Serial C backend wrapper
-- `c_multithreaded_wrapper.py` - Multi-threaded C backend wrapper
+- Python 3.6+
+- For C backends: GCC, OpenSSL dev libraries, pthread
 
-### Documentation
-- `README_BENCHMARK.md` - Detailed usage documentation
-- `BUILD_INSTRUCTIONS.md` - Build instructions for C backends
+## Important
 
-## Ethics Statement
+All password hashes used here are synthetic or generated for testing. No real passwords or compromised systems. This is for educational purposes and security testing only.
 
-**Important:** All password hashes used in this project are synthetic or generated with explicit consent. No real user passwords or compromised systems were used. This project is intended for educational purposes and security testing of password policies only.
+## Files
 
-## Features
+- `benchmark_harness.py` - Main framework
+- `run_benchmark.py` - Run standard benchmarks
+- `scaling_benchmark.py` - Test different thread counts
+- `workload_generator.py` - Generate test workloads
+- `hash_cracker_serial.c` - Single-threaded C backend
+- `hash_cracker_multithreaded.c` - Multi-threaded C backend
 
-### Available Backends
-- **Python Serial**: Pure Python baseline (works immediately)
-- **C Serial**: Single-threaded C implementation (~10x faster)
-- **C Multi-threaded**: Multi-threaded C with configurable threads
+## Using in Code
 
-### Attack Types
-- **Brute-Force**: Try all character combinations up to max length
-- **Dictionary**: Try passwords from a wordlist
-
-### Metrics Collected
-- Runtime (high-precision seconds)
-- Hashes per second
-- Total attempts
-- Success/failure
-- Speedup relative to baseline
-
-## Usage Examples
-
-### Standard Benchmark
-```bash
-# Brute-force attack
-python run_benchmark.py --brute-force --num-targets 5 --max-length 6
-
-# Dictionary attack
-python run_benchmark.py --dictionary --num-targets 3 --wordlist-size 1000
-```
-
-### Scaling Benchmark
-```bash
-# Test different thread counts
-python scaling_benchmark.py --brute-force --threads 1,2,4,8 --max-attempts 1000000
-
-# Dictionary scaling
-python scaling_benchmark.py --dictionary --threads 1,2,4,8 --wordlist-size 10000
-```
-
-### Programmatic Usage
 ```python
 from benchmark_harness import BenchmarkHarness
 from workload_generator import WorkloadGenerator
@@ -117,50 +91,9 @@ from workload_generator import WorkloadGenerator
 harness = BenchmarkHarness()
 generator = WorkloadGenerator()
 
-# Create workload
 workload = generator.create_simple_test_workload()
-
-# Run benchmark
-result = harness.benchmark_brute_force(
-    "python_serial",
-    workload,
-    max_attempts=None
-)
+result = harness.benchmark_brute_force("python_serial", workload)
 
 print(f"Runtime: {result.runtime_seconds:.4f}s")
 print(f"Hashes/Second: {result.hashes_per_second:,.2f}")
 ```
-
-## Requirements
-
-### Python
-- Python 3.x
-- Standard library only (no external dependencies)
-
-### C Compilation
-- GCC compiler
-- OpenSSL development libraries
-- pthread (included in standard libraries)
-
-## From Proposal
-
-This project extends the Security and Privacy in Computing project to compare:
-1. Single-threaded CPU baseline (Python and C)
-2. Multi-threaded CPU implementation (C with pthreads)
-3. Optional GPU kernel (stretch goal)
-
-Timeline:
-- Week 1: Serial CPU baseline, timing, cleanup (complete)
-- Week 2: Multi-threaded backend, scaling runs (complete)
-- Week 3: Final benchmarks, report, optional GPU
-
-## Important Notes
-
-- All test data is synthetic or consented - no real passwords are used
-- The framework demonstrates parallelization benefits
-- Focus is on simplicity and reproducibility
-- Windows support requires Visual Studio or MinGW setup
-
-## License
-
-See original repository for license information.
