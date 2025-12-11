@@ -1,0 +1,26 @@
+# Requirements for password hash cracking benchmark project
+# All dependencies are Python standard library - no external packages needed!
+
+# Python 3.x required
+# Standard library modules used:
+# - time
+# - hashlib
+# - typing
+# - dataclasses
+# - enum
+# - sys
+# - os
+# - ctypes (for C backend wrappers)
+# - pathlib
+# - csv
+# - json
+# - argparse
+# - datetime
+
+# For C backends (optional):
+# - GCC compiler
+# - OpenSSL development libraries (libssl-dev on Ubuntu/Debian, openssl-devel on Fedora/RHEL)
+# - pthread (usually included with GCC)
+
+# No Python packages need to be installed for this project!
+

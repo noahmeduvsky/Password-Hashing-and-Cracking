@@ -1,68 +1,166 @@
-Password Generation and Cracking Tool
+# Password-Hashing-and-Cracking
 
-Description
+Parallelizing Password-Hash Search for Security Testing: A Comparative Study of CPU, Multi-thread, and GPU Approaches
 
-This is a password generation, evaluation, and cracking application that demonstrates how to generate random passwords, evaluate their strength, and perform common password cracking techniques, such as brute force, dictionary attacks, and rainbow table attacks. The app also allows the user to set a master password, store it in a database, and simulate cracking the master password using the aforementioned methods.
+## Project Status
 
-Features
-- Generate random passwords with customizable criteria (length, uppercase, numbers, special characters).
-- Evaluate password strength.
-- Save and hash passwords.
-- Crack hashed passwords using brute force, dictionary, and rainbow table attacks.
-- Change or crack the master password stored in the database.
+**Week 1, Week 2, and Week 3 Complete!**
 
-Requirements
+All required objectives from the proposal have been implemented:
+- Python benchmarking harness with timing infrastructure
+- Single-threaded C/C++ backend
+- Multi-threaded C/C++ backend with thread pool
+- Scaling benchmarks with varying thread counts
+- Workload generation (brute-force and dictionary attacks)
 
-Before running the application, ensure the following libraries are installed:
+## Quick Start
 
-Required Libraries
+### 1. Build C Backends
 
-1. cffi==1.17.1
-2. cryptography==44.0.0
-3. passlib==1.7.4
-4. pycparser==2.22
-5. pyperclip==1.9.0
-6. PyQt5==5.15.11
-7. PyQt5-Qt5==5.15.2
-8. PyQt5_sip==12.15.0
+**Linux/macOS:**
+```bash
+# Install OpenSSL development libraries first:
+# Ubuntu/Debian: sudo apt-get install libssl-dev
+# Fedora/RHEL: sudo yum install openssl-devel
 
-These libraries can be installed using `pip`. To install all dependencies, you can use the provided `requirements.txt` file.
+# Build both serial and multi-threaded backends
+make all
+```
 
-Setup and Installation
+**Windows:**
+```powershell
+# First, install MinGW-w64 (see BUILD_WINDOWS.md)
+# Then run the build script:
+.\build_windows.ps1
+```
 
-Step 1: Clone the repository or download the source files.
-If you don't already have the repository, you can clone it using Git:
+### 2. Run Benchmarks
 
-git clone <repository_url>
-https://github.com/noahmeduvsky/Password-Hashing-and-Cracking.git
+**Simple Test (Python only - no compilation needed):**
+```bash
+python run_benchmark.py --test
+```
 
-Step 2: Install the dependencies.
-You can install the required libraries by running:
+**Scaling Benchmark (requires compilation):**
+```bash
+python scaling_benchmark.py --brute-force --threads 1,2,4,8
+```
 
-pip install -r requirements.txt
+## Project Structure
 
-Ensure that you are using the correct Python environment. It is recommended to use a virtual environment to manage dependencies.
+### Core Framework
+- `benchmark_harness.py` - Main benchmarking framework
+- `run_benchmark.py` - Standard benchmark runner
+- `scaling_benchmark.py` - Scaling benchmark with varying thread counts
+- `workload_generator.py` - Workload generation utilities
 
-sqlite was used for the database in the project. Make sure to install it and add the PATH so that the application can run with the database. 
+### C Implementations
+- `hash_cracker_serial.c/h` - Single-threaded C implementation
+- `hash_cracker_multithreaded.c/h` - Multi-threaded C implementation
+- `Makefile` - Build system
 
-Step 3: Run the application.
-Once the dependencies are installed, you can run the application using the following command:
+### Python Wrappers
+- `c_backend_wrapper.py` - Serial C backend wrapper
+- `c_multithreaded_wrapper.py` - Multi-threaded C backend wrapper
 
-python master.py
+### Documentation
+- `README_BENCHMARK.md` - Detailed usage documentation
+- `BUILD_INSTRUCTIONS.md` - Build instructions for C backends
 
-This will start the application, and the graphical user interface (GUI) will be displayed.
+## Ethics Statement
 
-Step 4: Create a Master Password.
-When you run the application for the first time, it will prompt you to set a master password. This master password will be used for accessing certain features of the application, like cracking the password database.
+**Important:** All password hashes used in this project are synthetic or generated with explicit consent. No real user passwords or compromised systems were used. This project is intended for educational purposes and security testing of password policies only.
 
-Step 5: Use the application.
-You can:
-- Generate random passwords.
-- Crack a password using different attack methods.
-- Save passwords to the database.
-- Change the master password.
+## Features
 
-Troubleshooting
-- If you encounter an error stating that a library is missing, make sure that all dependencies listed in the `requirements.txt` file are properly installed.
-- If the application does not start, ensure that you're running it with the correct version of Python (preferably Python 3.x).
-- If you have any other issues, feel free to open an issue in the repository's issue tracker.
+### Available Backends
+- **Python Serial**: Pure Python baseline (works immediately)
+- **C Serial**: Single-threaded C implementation (~10x faster)
+- **C Multi-threaded**: Multi-threaded C with configurable threads
+
+### Attack Types
+- **Brute-Force**: Try all character combinations up to max length
+- **Dictionary**: Try passwords from a wordlist
+
+### Metrics Collected
+- Runtime (high-precision seconds)
+- Hashes per second
+- Total attempts
+- Success/failure
+- Speedup relative to baseline
+
+## Usage Examples
+
+### Standard Benchmark
+```bash
+# Brute-force attack
+python run_benchmark.py --brute-force --num-targets 5 --max-length 6
+
+# Dictionary attack
+python run_benchmark.py --dictionary --num-targets 3 --wordlist-size 1000
+```
+
+### Scaling Benchmark
+```bash
+# Test different thread counts
+python scaling_benchmark.py --brute-force --threads 1,2,4,8 --max-attempts 1000000
+
+# Dictionary scaling
+python scaling_benchmark.py --dictionary --threads 1,2,4,8 --wordlist-size 10000
+```
+
+### Programmatic Usage
+```python
+from benchmark_harness import BenchmarkHarness
+from workload_generator import WorkloadGenerator
+
+harness = BenchmarkHarness()
+generator = WorkloadGenerator()
+
+# Create workload
+workload = generator.create_simple_test_workload()
+
+# Run benchmark
+result = harness.benchmark_brute_force(
+    "python_serial",
+    workload,
+    max_attempts=None
+)
+
+print(f"Runtime: {result.runtime_seconds:.4f}s")
+print(f"Hashes/Second: {result.hashes_per_second:,.2f}")
+```
+
+## Requirements
+
+### Python
+- Python 3.x
+- Standard library only (no external dependencies)
+
+### C Compilation
+- GCC compiler
+- OpenSSL development libraries
+- pthread (included in standard libraries)
+
+## From Proposal
+
+This project extends the Security and Privacy in Computing project to compare:
+1. Single-threaded CPU baseline (Python and C)
+2. Multi-threaded CPU implementation (C with pthreads)
+3. Optional GPU kernel (stretch goal)
+
+Timeline:
+- Week 1: Serial CPU baseline, timing, cleanup (complete)
+- Week 2: Multi-threaded backend, scaling runs (complete)
+- Week 3: Final benchmarks, report, optional GPU
+
+## Important Notes
+
+- All test data is synthetic or consented - no real passwords are used
+- The framework demonstrates parallelization benefits
+- Focus is on simplicity and reproducibility
+- Windows support requires Visual Studio or MinGW setup
+
+## License
+
+See original repository for license information.

@@ -1,0 +1,52 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.dylib
+*.dll
+
+# Build artifacts
+*.o
+*.a
+build/
+dist/
+*.egg-info/
+
+# Benchmark results
+benchmark_results/
+*.csv
+*.json
+*_results.csv
+*_summary.txt
+
+# Database files (if any)
+*.db
+*.sqlite
+*.sqlite3
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Virtual environment
+venv/
+env/
+ENV/
+
+# Compiled C libraries
+libhash_cracker_*.so
+libhash_cracker_*.dylib
+hash_cracker_*.dll
+
+# Test outputs
+example_results.*
+example_summary.*
+
